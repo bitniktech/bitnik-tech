@@ -61,6 +61,7 @@ export async function onRequestPost({ request, env }) {
 
   const name = line(d.name, 120);
   const email = line(d.email, 200);
+  const phone = line(d.phone, 40);
   const message = String(d.message ?? "").trim().slice(0, 5000);
   const type = KINDS[d.kind] || KINDS.unsure;
   if (!name || !EMAIL_RE.test(email)) return json(422, { ok: false, error: "name and email required" });
@@ -73,7 +74,7 @@ export async function onRequestPost({ request, env }) {
   const body = JSON.stringify({
     form: "Project inquiry",
     page: "bitnik.tech",
-    fields: { name, email, type, message },
+    fields: { name, email, phone, type, message },
   });
   const ts = String(Math.floor(Date.now() / 1000));
   const res = await env.MAILER.fetch("https://form-mailer/send", {

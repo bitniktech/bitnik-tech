@@ -238,7 +238,8 @@ a{color:inherit;text-decoration:none}
 .pform,.pdone{width:100%;max-width:760px;display:flex;flex-direction:column;gap:20px}
 .flead{width:100%;max-width:40ch;margin:0;color:var(--mute);font-size:17px;line-height:1.55}
 [hidden]{display:none!important}
-.f2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.f2{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+.fld .opt{color:var(--mute)}
 .fld{display:flex;flex-direction:column;gap:8px;border:0;margin:0;padding:0;min-width:0}
 .fld label,.fld legend{font-family:var(--mono);font-size:12px;color:#C9C7C1;padding:0}
 /* Outlined, faintly filled fields: on a dark page an underline alone reads as a rule, not a place to type. */
@@ -259,6 +260,7 @@ a{color:inherit;text-decoration:none}
 .pd-h{font-family:var(--display);font-size:clamp(28px,3vw,46px);letter-spacing:-.035em}
 .pd-b{color:var(--mute)}
 .pagain{align-self:flex-start;min-height:44px;background:none;border:0;border-bottom:1px solid currentColor;padding:0;font-size:14px;cursor:pointer;color:var(--ink)}
+@media (max-width:900px){.f2{grid-template-columns:1fr 1fr}.f2 .fld:last-child{grid-column:1 / -1}}
 @media (max-width:640px){.f2{grid-template-columns:1fr}}
 .contact .addr{font-family:var(--display);font-size:clamp(22px,2.4vw,36px);letter-spacing:-.03em;user-select:all;-webkit-user-select:all}
 .contact .phone{color:var(--mute);user-select:all;-webkit-user-select:all}
@@ -492,11 +494,12 @@ a{color:inherit;text-decoration:none}
     <div class="grid">
       <h2 class="display">Let's build something together.</h2>
       <div class="act">
-      <p class="flead" id="flead">Tell us a little about what you&rsquo;re working on, and we&rsquo;ll get back to you by email.</p>
+      <p class="flead" id="flead">Tell us a little about what you&rsquo;re working on, and we&rsquo;ll get back to you.</p>
       <form class="pform" aria-describedby="flead" id="pform" action="/api/contact" method="post" novalidate>
         <div class="f2">
           <div class="fld"><label for="f-name">Name</label><input id="f-name" name="name" autocomplete="name" required></div>
           <div class="fld"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
+          <div class="fld"><label for="f-phone">Phone <span class="opt">(optional)</span></label><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel"></div>
         </div>
         <fieldset class="fld kinds"><legend>What do you need?</legend>
           <label><input type="radio" name="kind" value="website" checked><span>Website</span></label>
@@ -509,7 +512,7 @@ a{color:inherit;text-decoration:none}
         <div class="tsbox" id="tsbox"></div>
         <div class="fsend"><button class="btn solid" type="submit">Send</button><p class="fstat" id="pstatus" aria-live="polite"></p></div>
       </form>
-      <div class="pdone" id="pdone" tabindex="-1" hidden><p class="pd-h">Thanks, <span data-name></span>.</p><p class="pd-b">We'll reply to <span data-email></span>.</p><button type="button" class="pagain" id="pagain">Send another</button></div>
+      <div class="pdone" id="pdone" tabindex="-1" hidden><p class="pd-h">Thanks, <span data-name></span>.</p><p class="pd-b">We'll be in touch soon.</p><button type="button" class="pagain" id="pagain">Send another</button></div>
       </div>
     </div>
     <footer class="foot mono">
@@ -791,7 +794,7 @@ var flow={p:1,visible:false};
     if(!n.value.trim()){n.setAttribute('aria-invalid','true');ok=false}
     if(!/^\S+@\S+\.\S+$/.test(m.value.trim())){m.setAttribute('aria-invalid','true');ok=false}
     if(!ok){st.textContent='Add your name and a valid email so we can reply.';(n.getAttribute('aria-invalid')?n:m).focus();return}
-    var data={name:n.value.trim(),email:m.value.trim(),kind:(f.querySelector('input[name=kind]:checked')||{}).value||'unsure',message:f.elements.message.value,website:f.elements.website.value,elapsed:Date.now()-t0};
+    var data={name:n.value.trim(),email:m.value.trim(),kind:(f.querySelector('input[name=kind]:checked')||{}).value||'unsure',phone:f.elements.phone.value.trim(),message:f.elements.message.value,website:f.elements.website.value,elapsed:Date.now()-t0};
     btn.disabled=true;st.style.color='var(--mute)';st.textContent='Sending…';loadTs();
     waitToken(function(t){
       data.token=t;
@@ -800,7 +803,7 @@ var flow={p:1,visible:false};
         .then(function(){
           btn.disabled=false;st.textContent='';st.style.color='';
           f.hidden=true;var d=document.getElementById('pdone');d.hidden=false;
-          d.querySelector('[data-name]').textContent=data.name.split(/\s+/)[0];d.querySelector('[data-email]').textContent=data.email;
+          d.querySelector('[data-name]').textContent=data.name.split(/\s+/)[0];
           d.focus();
         })
         .catch(function(err){
