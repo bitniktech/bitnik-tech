@@ -1,34 +1,63 @@
 # bitnik-tech
 
-The "coming soon" landing page for `bitnik.tech`, the public site for Bitnik
-LLC (Woodfin, NC), the company behind [Planeshift](../planeshift). It is a
-single static page — `index.html` plus the assets in `assets/` — with no
-build step and no server-side code.
+The public site for Bitnik Technology (Bitnik LLC, Asheville, NC) at
+`bitnik.tech`: one page of work (AVL.LIVE, Rally Trace, Planeshift, Boundless),
+the automation story and a contact form, plus privacy and accessibility pages.
+There is no build step.
+
+| Path | What it is |
+| --- | --- |
+| `public/` | everything served: `index.html`, `img/`, `privacy/`, `accessibility/`, `404.html` |
+| `public/_redirects` | 301s from the old multi-page site's URLs to sections of the one page |
+| `public/_headers` | security headers, and a week's cache on `img/` |
+| `functions/api/contact.js` | `POST /api/contact`, the contact form's endpoint |
+| `wrangler.toml` | the Pages project's configuration, including its bindings |
+| `.github/workflows/deploy.yml` | deploys `main` to Cloudflare Pages |
 
 ## How it is served
 
-GitHub Pages serves this repo's `main` branch from the repository root. The
-Pages site, the repo itself, and its deploy key are declared in `platform`
-(`platform/github.tf`: `module.bitnik_tech_repo` and
-`github_repository_pages.bitnik_tech`) — change them with a pull request
-there, never in GitHub's settings UI. `CNAME` at the repo root names the
-custom domain (`bitnik.tech`); it is committed here because Pages expects it
-in the served branch, but the domain itself is DNS, not a Pages setting.
+Cloudflare Pages project `bitnik-tech` (account `fda92d10…`). DNS for the apex
+and `www` is declared in the `platform` repo, `projects/bitnik-tech/dns.tf`.
 
-## Domain
+Every push to `main` runs `deploy.yml`, which runs `wrangler pages deploy` with
+the repository secret `CLOUDFLARE_API_TOKEN` (a token scoped to *Cloudflare
+Pages: Edit* on this account). `wrangler.toml` is the source of truth for the
+project's bindings: anything set in the dashboard is replaced on deploy.
 
-`bitnik.tech`'s DNS zone — its address records and the `brad@bitnik.tech`
-email forwarding — is declared in `platform/projects/bitnik-tech/` (a
-Cloudflare zone, moved there from Namecheap's registrar DNS on 2026-09-20,
-when the Namecheap zone held only email records and the domain did not resolve). Change DNS
-there, not in a registrar or Cloudflare console.
+## The contact form
 
-Verified 2026-10-01: `dig +short bitnik.tech A` returns the four GitHub Pages
-addresses, `NS` returns Cloudflare's nameservers, and `https://bitnik.tech/`
-serves this page with a `200` from GitHub.com. The domain resolves and the
-page is live.
+The page posts JSON to `/api/contact`. The function checks the request came
+from this site, drops anything that fills the hidden `website` field, validates
+name and email, and hands the submission to the `form-mailer` Worker over the
+`FORM_MAILER` service binding. form-mailer verifies an HMAC signature and sends
+the email through Cloudflare Email Service from `forms@send.bitnik.tech`, with
+reply-to set to the visitor.
 
-## Changing the page
+It needs, once:
 
-Edit `index.html` or `assets/`, push to `main`, and GitHub Pages republishes
-within a few minutes — no separate deploy step.
+- form-mailer's `CLIENTS` variable to have a `bitnik` entry, e.g.
+  `"bitnik":{"name":"Bitnik Technology","site":"bitnik.tech","to":["brad@bitnik.tech"]}`
+- the same random value as form-mailer's secret `SECRET_BITNIK` and this Pages
+  project's secret `FORM_SECRET`. Generate it once and pipe it to both, so it is
+  never copied by hand:
+
+  ```sh
+  s=$(openssl rand -hex 32)
+  printf %s "$s" | npx wrangler secret put SECRET_BITNIK --name form-mailer
+  printf %s "$s" | npx wrangler pages secret put FORM_SECRET --project-name bitnik-tech
+  unset s
+  ```
+
+Until both exist the form answers 503 and the page shows an error with the phone
+number. These are secrets set by hand on a provider, so nothing rotates them.
+
+## Running it locally
+
+```sh
+echo 'FORM_SECRET=test-secret' > .dev.vars     # gitignored
+npx wrangler@4.148.0 pages dev                  # http://localhost:8788
+```
+
+To exercise the form end to end, run a copy of form-mailer with `wrangler dev`
+alongside it (its `MAILER` binding replaced by one that logs); `pages dev`
+connects the `FORM_MAILER` binding to it automatically.

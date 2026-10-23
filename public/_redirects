@@ -1,0 +1,12 @@
+# Pages from the earlier multi-page site, sent to the matching part of the one-page site.
+/work                /#work      301
+/work/               /#work      301
+/work/*              /#work      301
+/services            /#work-list 301
+/services/           /#work-list 301
+/seo                 /#avl       301
+/seo/                /#avl       301
+/about               /           301
+/about/              /           301
+/contact             /#contact   301
+/contact/            /#contact   301
