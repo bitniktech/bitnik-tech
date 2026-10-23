@@ -17,14 +17,13 @@ There is no build step.
 ## How it is served
 
 Cloudflare Pages project `bitnik-tech` in Brad's account (`fda92d10…`), the account
-that holds the bitnik.tech zone and the `form-mailer` Worker. DNS for the apex and
-`www` is declared in the `platform` repo, `projects/bitnik-tech/dns.tf`.
+that holds the bitnik.tech zone and the `form-mailer` Worker. Its own address is
+`bitnik-tech-7iy.pages.dev`. DNS for the apex and `www` is declared in the
+`platform` repo, `projects/bitnik-tech/dns.tf`.
 
-Deploy from a clean checkout of `main`:
-
-```sh
-CLOUDFLARE_ACCOUNT_ID=fda92d10e4a8d782ba78b35a860e47a1 npx wrangler@4.148.0 pages deploy --branch main
-```
+The project is connected to this repository: every push to `main` builds and
+deploys it (no build step; Cloudflare serves `public/` and builds `functions/`).
+Other branches get preview deployments.
 
 `wrangler.toml` is the source of truth for the project's bindings: anything set
 in the dashboard is replaced on deploy.
