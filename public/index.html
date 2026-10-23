@@ -5,9 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Bitnik Technology</title>
 <meta name="description" content="Bitnik Technology builds websites, iPhone apps and the AI automation that runs underneath a business.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hubot+Sans:wght@400;500;600&family=Mona+Sans:wght@400;500&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="preload" href="/fonts/hubot-sans-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/mona-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:'Hubot Sans';font-style:normal;font-weight:500;font-display:swap;src:url(/fonts/hubot-sans-latin-500-normal.woff2) format('woff2')}
+@font-face{font-family:'Mona Sans';font-style:normal;font-weight:400;font-display:swap;src:url(/fonts/mona-sans-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'Mona Sans';font-style:normal;font-weight:500;font-display:swap;src:url(/fonts/mona-sans-latin-500-normal.woff2) format('woff2')}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:400;font-display:swap;src:url(/fonts/jetbrains-mono-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:700;font-display:swap;src:url(/fonts/jetbrains-mono-latin-700-normal.woff2) format('woff2')}
+</style>
 <style>
 /* Layout: a 12-column editorial grid with wide gutters. Every scene fills the viewport and holds one idea;
    oversized display type sits against 14-15px body; full-height media breaks the grid at the right edge. */
@@ -60,7 +66,7 @@ a{color:inherit;text-decoration:none}
 
 /* ---------- hero ---------- */
 .hero{position:relative;min-height:max(640px,100svh);overflow:hidden;isolation:isolate;display:flex;flex-direction:column;justify-content:flex-end;padding-block:120px clamp(28px,6vh,72px)}
-#gl{position:absolute;inset:0;width:100%;height:100%;z-index:-1;display:block}
+#gl{position:absolute;inset:0;width:100%;height:100%;z-index:-1;display:block;image-rendering:pixelated}
 .hero{cursor:grab;touch-action:pan-y}
 .hero.spin{cursor:grabbing}
 .hero .grid{cursor:auto}
@@ -227,11 +233,12 @@ a{color:inherit;text-decoration:none}
 .contact h2{grid-column:1 / span 12;font-size:clamp(54px,11vw,210px);max-width:8.4em}
 .contact .act{grid-column:1 / span 12;display:flex;flex-wrap:wrap;align-items:center;gap:20px 32px;margin-top:clamp(36px,6vh,64px)}
 .pform,.pdone{width:100%;max-width:760px;display:flex;flex-direction:column;gap:20px}
+[hidden]{display:none!important}
 .f2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .fld{display:flex;flex-direction:column;gap:8px;border:0;margin:0;padding:0;min-width:0}
 .fld label,.fld legend{font-family:var(--mono);font-size:11px;color:var(--mute);padding:0}
 .fld input:not([type=radio]),.fld textarea{width:100%;min-height:48px;padding:12px 0;border:0;border-bottom:1px solid rgba(236,233,226,.32);background:transparent;color:var(--ink);font-family:var(--sans);font-size:17px;resize:vertical;border-radius:0}
-.fld input:focus,.fld textarea:focus{outline:none;border-bottom-color:var(--accent)}
+.fld input:focus,.fld textarea:focus{outline:none;border-bottom-color:var(--accent);box-shadow:0 1px 0 0 var(--accent)}
 .fld [aria-invalid=true]{border-bottom-color:#FF6B6B}
 .kinds{flex-direction:row;flex-wrap:wrap;gap:8px}
 .kinds legend{width:100%;margin-bottom:8px}
@@ -248,7 +255,7 @@ a{color:inherit;text-decoration:none}
 @media (max-width:640px){.f2{grid-template-columns:1fr}}
 .contact .addr{font-family:var(--display);font-size:clamp(22px,2.4vw,36px);letter-spacing:-.03em;user-select:all;-webkit-user-select:all}
 .contact .phone{color:var(--mute);user-select:all;-webkit-user-select:all}
-.foot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px;border-top:1px solid var(--rule);padding-top:22px;color:var(--mute)}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 24px;border-top:1px solid var(--rule);padding-top:22px;color:var(--mute)}
 .foot nav{display:flex;flex-wrap:wrap;gap:6px 22px}
 .foot a{display:inline-flex;align-items:center;min-height:44px;transition:color .5s var(--ease)}
 .foot a:hover{color:var(--ink)}
@@ -317,10 +324,11 @@ a{color:inherit;text-decoration:none}
 <meta property="og:description" content="Websites, iPhone apps and the AI automation that runs underneath a business. A small studio in Asheville, NC.">
 <meta property="og:image" content="https://bitnik.tech/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<style>.hp{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}.foot a{color:inherit}.fsend .btn[disabled]{opacity:.5;pointer-events:none}</style>
+<style>.hp{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}.skip{position:fixed;z-index:100;left:16px;top:-80px;padding:10px 14px;background:var(--ink);color:var(--ground);font-size:14px}.skip:focus{top:16px}.foot a{color:inherit}.fsend .btn[disabled]{opacity:.5;pointer-events:none}</style>
 </head>
 <body>
 
+<a class="skip" href="#work">Skip to the work</a>
 <header class="nav wrap" id="nav">
   <a class="brand" href="#top" aria-label="bitnik, back to top">bitnik<span class="blk" aria-hidden="true"></span></a>
   <nav class="navr" aria-label="Primary">
@@ -376,7 +384,7 @@ a{color:inherit;text-decoration:none}
       </div>
       <div class="callwrap"><div class="frame" id="avlFrame">
         <div class="bar"><i></i><i></i><i></i><span class="mono">avl.live/shows</span></div>
-        <div class="dz"><img src="/img/avl-site.webp" width="1440" height="694" alt="The AVL.LIVE shows page: Thursday's listings by time, venue, city and genre, with a red bar marking the current time." loading="lazy" decoding="async"></div>
+        <div class="dz"><img src="/img/avl-site.webp" srcset="/img/avl-site-720.webp 720w, /img/avl-site-1080.webp 1080w, /img/avl-site.webp 1440w" sizes="(max-width:900px) calc(100vw - 32px), 56vw" width="1440" height="694" alt="The AVL.LIVE shows page: Thursday's listings by time, venue, city and genre, with a red bar marking the current time." loading="lazy" decoding="async"></div>
       </div>
         <span class="cl" style="--y:15%"><i></i><b>Pick a night<small>tonight, weekend or this week</small></b></span>
         <span class="cl" style="--y:48%"><i></i><b>Happening now<small>the red line is the current time</small></b></span>
@@ -397,16 +405,16 @@ a{color:inherit;text-decoration:none}
       </div>
       <div class="watch">
         <div class="wstack" id="wstack">
-          <img src="/img/rt-watch-start.webp" width="416" height="496" alt="Apple Watch start screen with a large Play button." loading="lazy" decoding="async">
-          <img class="on" src="/img/rt-watch-live.webp" width="416" height="496" alt="Apple Watch scoring a game at 4 to 2, with the server marked." loading="lazy" decoding="async">
-          <img src="/img/rt-watch-gp.webp" width="416" height="496" alt="Apple Watch at 10 to 7, outlined for game point." loading="lazy" decoding="async">
-          <img src="/img/rt-watch-won.webp" width="416" height="496" alt="Apple Watch showing Won, 11 to 8, with a Save game button." loading="lazy" decoding="async">
+          <img src="/img/rt-watch-start.webp" srcset="/img/rt-watch-start-208.webp 208w, /img/rt-watch-start.webp 416w" sizes="(max-width:900px) 170px, 220px" width="416" height="496" alt="Apple Watch start screen with a large Play button." loading="lazy" decoding="async">
+          <img class="on" src="/img/rt-watch-live.webp" srcset="/img/rt-watch-live-208.webp 208w, /img/rt-watch-live.webp 416w" sizes="(max-width:900px) 170px, 220px" width="416" height="496" alt="Apple Watch scoring a game at 4 to 2, with the server marked." loading="lazy" decoding="async">
+          <img src="/img/rt-watch-gp.webp" srcset="/img/rt-watch-gp-208.webp 208w, /img/rt-watch-gp.webp 416w" sizes="(max-width:900px) 170px, 220px" width="416" height="496" alt="Apple Watch at 10 to 7, outlined for game point." loading="lazy" decoding="async">
+          <img src="/img/rt-watch-won.webp" srcset="/img/rt-watch-won-208.webp 208w, /img/rt-watch-won.webp 416w" sizes="(max-width:900px) 170px, 220px" width="416" height="496" alt="Apple Watch showing Won, 11 to 8, with a Save game button." loading="lazy" decoding="async">
         </div>
         <p class="score mono" id="score" aria-hidden="true"><span>Ready</span><span class="on">4 – 2 &nbsp;·&nbsp; server 1</span><span>10 – 7 &nbsp;·&nbsp; game point</span><span>Won 11 – 8</span></p>
       </div>
       <div class="phones">
         <div class="rt-call callwrap" id="rtp1">
-          <div class="ph dz"><img src="/img/rt-game.webp" width="660" height="1434" alt="Rally Trace on iPhone: an 11 to 7 win with a momentum chart, heart rate, serve and return rates, and effort." loading="lazy" decoding="async"></div>
+          <div class="ph dz"><img src="/img/rt-game.webp" srcset="/img/rt-game-330.webp 330w, /img/rt-game.webp 660w" sizes="(max-width:900px) 170px, 240px" width="660" height="1434" alt="Rally Trace on iPhone: an 11 to 7 win with a momentum chart, heart rate, serve and return rates, and effort." loading="lazy" decoding="async"></div>
           <span class="cl" style="--y:18%"><i></i><b>Final score<small>won 11–7</small></b></span>
           <span class="cl" style="--y:32%"><i></i><b>Momentum<small>every point, in order</small></b></span>
           <span class="cl" style="--y:43%"><i></i><b>Heart rate<small>from your watch</small></b></span>
@@ -421,7 +429,7 @@ a{color:inherit;text-decoration:none}
   <section class="case ps wrap" id="planeshift" data-ground="#0F0A1F" aria-label="Planeshift">
     <div class="ps-stage" id="psStage">
       <div class="ctext">
-        <img class="ps-icon" src="/img/ps-icon.webp" width="256" height="256" alt="Planeshift app icon: a glowing arch with a prompt chevron.">
+        <img class="ps-icon" src="/img/ps-icon.webp" srcset="/img/ps-icon-144.webp 144w, /img/ps-icon.webp 256w" sizes="72px" width="256" height="256" alt="Planeshift app icon: a glowing arch with a prompt chevron.">
         <p class="tag mono">iPhone app &nbsp;/&nbsp; Planeshift</p>
         <h3 class="display">Your AI helpers, in your pocket.</h3>
         <p class="body">Planeshift is an iPhone app for people who leave AI agents working on their computers. When one gets stuck and needs a decision, your phone tells you, and you answer with a tap.</p>
@@ -429,11 +437,11 @@ a{color:inherit;text-decoration:none}
         <a class="link" href="#contact">Talk to us about your app <span aria-hidden="true">→</span></a>
       </div>
       <div class="tclip"><p class="mono hint">Drag, swipe or scroll sideways</p><div class="track" id="psTrack" tabindex="0" aria-label="Planeshift screens">
-        <div class="ph dz"><img src="/img/ps-1.webp" width="720" height="1564" alt="Hosts screen: a reviewer agent on devbox needs you, with two hosts listed." loading="lazy" decoding="async"></div>
-        <div class="ph dz"><img src="/img/ps-3.webp" width="720" height="1564" alt="A session on alpha: the agent fixed a retry loop and asks whether to run the tests." loading="lazy" decoding="async"></div>
-        <div class="ph dz"><img src="/img/ps-2.webp" width="720" height="1564" alt="Agents screen grouped by needs you, working and done." loading="lazy" decoding="async"></div>
-        <div class="ph dz"><img src="/img/ps-4.webp" width="720" height="1564" alt="Theme picker with Arcane, Catppuccin Mocha, Tokyo Night, Dracula, Gruvbox and Nord." loading="lazy" decoding="async"></div>
-        <div class="ph dz"><img src="/img/ps-6.webp" width="720" height="1564" alt="Keys screen: an ED25519 key kept in the iPhone Keychain, unlocked with Face ID." loading="lazy" decoding="async"></div>
+        <div class="ph dz"><img src="/img/ps-1.webp" srcset="/img/ps-1-360.webp 360w, /img/ps-1.webp 720w" sizes="(max-width:900px) 240px, 320px" width="720" height="1564" alt="Hosts screen: a reviewer agent on devbox needs you, with two hosts listed." loading="lazy" decoding="async"></div>
+        <div class="ph dz"><img src="/img/ps-3.webp" srcset="/img/ps-3-360.webp 360w, /img/ps-3.webp 720w" sizes="(max-width:900px) 240px, 320px" width="720" height="1564" alt="A session on alpha: the agent fixed a retry loop and asks whether to run the tests." loading="lazy" decoding="async"></div>
+        <div class="ph dz"><img src="/img/ps-2.webp" srcset="/img/ps-2-360.webp 360w, /img/ps-2.webp 720w" sizes="(max-width:900px) 240px, 320px" width="720" height="1564" alt="Agents screen grouped by needs you, working and done." loading="lazy" decoding="async"></div>
+        <div class="ph dz"><img src="/img/ps-4.webp" srcset="/img/ps-4-360.webp 360w, /img/ps-4.webp 720w" sizes="(max-width:900px) 240px, 320px" width="720" height="1564" alt="Theme picker with Arcane, Catppuccin Mocha, Tokyo Night, Dracula, Gruvbox and Nord." loading="lazy" decoding="async"></div>
+        <div class="ph dz"><img src="/img/ps-6.webp" srcset="/img/ps-6-360.webp 360w, /img/ps-6.webp 720w" sizes="(max-width:900px) 240px, 320px" width="720" height="1564" alt="Keys screen: an ED25519 key kept in the iPhone Keychain, unlocked with Face ID." loading="lazy" decoding="async"></div>
       </div></div>
     </div>
   </section>
@@ -449,7 +457,7 @@ a{color:inherit;text-decoration:none}
       </div>
       <div class="frame cl-frame">
         <div class="bar"><i></i><i></i><i></i><span class="mono">boundlessconstruction.com</span></div>
-        <div class="dz"><img src="/img/bc-site.webp" width="1440" height="694" alt="The Boundless Construction homepage: the headline Houses into homes, across Western North Carolina, beside a before-and-after slider." loading="lazy" decoding="async"></div>
+        <div class="dz"><img src="/img/bc-site.webp" srcset="/img/bc-site-720.webp 720w, /img/bc-site-1080.webp 1080w, /img/bc-site.webp 1440w" sizes="(max-width:900px) calc(100vw - 32px), 56vw" width="1440" height="694" alt="The Boundless Construction homepage: the headline Houses into homes, across Western North Carolina, beside a before-and-after slider." loading="lazy" decoding="async"></div>
       </div>
     </div>
   </section>
@@ -497,8 +505,8 @@ a{color:inherit;text-decoration:none}
       </div>
     </div>
     <footer class="foot mono">
-      <span>Bitnik LLC &nbsp;·&nbsp; Asheville, North Carolina &nbsp;·&nbsp; © 2026</span>
-      <a href="tel:+17578711805">+1 757 871 1805</a><nav aria-label="Our work, live"><a href="https://rallytrace.com/" target="_blank" rel="noopener">Rally Trace</a><a href="https://avl.live/" target="_blank" rel="noopener">AVL.LIVE</a></nav><nav aria-label="Legal"><a href="/privacy/">Privacy</a> &nbsp;·&nbsp; <a href="/accessibility/">Accessibility</a></nav>
+      <span style="display:inline-flex;align-items:center;min-height:44px">Bitnik LLC &nbsp;·&nbsp; Asheville, North Carolina &nbsp;·&nbsp; © 2026</span>
+      <a href="tel:+17578711805">+1 757 871 1805</a><nav aria-label="Our work, live"><a href="https://rallytrace.com/" target="_blank" rel="noopener">Rally Trace</a><a href="https://avl.live/" target="_blank" rel="noopener">AVL.LIVE</a></nav><nav aria-label="Legal"><a href="/privacy/">Privacy</a><a href="/accessibility/">Accessibility</a></nav>
     </footer>
   </section>
 </main>
@@ -527,17 +535,15 @@ tick();setInterval(tick,20000);
 
 /* ---------- hero: a 1-bit, ordered-dither planet with its satellite ---------- */
 var hero={rot:0,vel:0,drag:false,s:0,intro:RM?1:0,lens:0,lensT:0,m:[0,0],mt:[0,0],mp:[-9999,-9999],visible:true};
-(function initGL(){
+function initGL(){
   var c=$('#gl');if(!c)return;
   var gl=null;try{gl=c.getContext('webgl',{antialias:false,alpha:false,depth:false,stencil:false,premultipliedAlpha:false,powerPreference:'high-performance'})}catch(e){}
   if(!gl){c.style.background='radial-gradient(40% 50% at 72% 46%,#24262c 0%,#0A0B0D 70%)';return;}
   var vs='attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
   var fs=[
   'precision highp float;',
-  'uniform vec2 R;uniform float T;uniform vec2 M;uniform vec2 MP;uniform float S;uniform float I;uniform float D;uniform vec2 C;uniform float RAD;uniform float CELL;uniform float LZ;uniform float ROT;',
+  'uniform sampler2D LAND;uniform vec2 R;uniform float T;uniform vec2 M;uniform vec2 MP;uniform float S;uniform float I;uniform float D;uniform vec2 C;uniform float RAD;uniform float CELL;uniform float LZ;uniform float ROT;',
   'float h21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}',
-  'float n2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h21(i),h21(i+vec2(1.,0.)),f.x),mix(h21(i+vec2(0.,1.)),h21(i+vec2(1.,1.)),f.x),f.y);}',
-  'float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*n2(p);p=p*2.03+vec2(7.1,3.7);a*=.5;}return v;}',
   'float b2(vec2 a){a=floor(a);return fract(dot(a,vec2(.5,a.y*.75)));}',
   'float b4(vec2 a){return b2(.5*a)*.25+b2(a);}',
   'float b8(vec2 a){return b4(.5*a)*.25+b2(a);}',
@@ -553,7 +559,7 @@ var hero={rot:0,vel:0,drag:false,s:0,intro:RM?1:0,lens:0,lensT:0,m:[0,0],mt:[0,0
   '  float z=sqrt(1.-r2);vec3 n=vec3(p,z);',
   '  vec3 nr=rY(T*.09+M.x*.2+ROT)*rX(-.32+M.y*.18)*n;',
   '  float lon=atan(nr.x,nr.z),lat=asin(clamp(nr.y,-1.,1.));',
-  '  float land=smoothstep(.47,.6,fbm(vec2(lon*1.5,lat*2.4)+vec2(3.,1.)));',
+  '  float land=smoothstep(.47,.6,texture2D(LAND,vec2(lon/6.2832+.5,lat/3.1416+.5)).r);',
   '  float lines=1.-smoothstep(0.,.06,abs(fract(lat*3.8)-.5)*2.);',
   '  float dif=max(dot(n,L),0.);',
   '  lum=(.035+dif*.97)*mix(.42,1.08,land)+lines*.06*dif;',
@@ -579,8 +585,8 @@ var hero={rot:0,vel:0,drag:false,s:0,intro:RM?1:0,lens:0,lensT:0,m:[0,0],mt:[0,0
   ' float md=length(fc-MP);',
   ' float lr=170.*D*LZ;',
   ' float edge=(b8(fc/(cell*.5))-.5)*cell*1.4;',
-  ' float fine=step(md+edge,lr);',
-  ' float cs=mix(cell,cell*.5,fine);',
+  ' float fine=LZ>.001?step(md+edge,lr):0.;',
+  ' float cs=mix(cell,max(cell*.5,4.),fine);',
   ' vec2 id=floor(fc/cs);vec2 cc=(id+.5)*cs;',
   ' vec3 sc=scene(cc);',
   ' float th=b8(id);',
@@ -609,13 +615,37 @@ var hero={rot:0,vel:0,drag:false,s:0,intro:RM?1:0,lens:0,lensT:0,m:[0,0],mt:[0,0
   gl.useProgram(pr);
   var b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
   var loc=gl.getAttribLocation(pr,'a');gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
-  var U={};['R','T','M','MP','S','I','D','C','RAD','CELL','LZ','ROT'].forEach(function(k){U[k]=gl.getUniformLocation(pr,k)});
+  var U={};['R','T','M','MP','S','I','D','C','RAD','CELL','LZ','ROT','LAND'].forEach(function(k){U[k]=gl.getUniformLocation(pr,k)});
+  (function bakeLand(){
+    var TW=256,TH=128,px=new Uint8Array(TW*TH);
+    function fr(x){return x-Math.floor(x)}
+    function h(x,y){x=fr(x*123.34);y=fr(y*456.21);var d=x*(x+45.32)+y*(y+45.32);x+=d;y+=d;return fr(x*y)}
+    function n(x,y){var ix=Math.floor(x),iy=Math.floor(y),fx=x-ix,fy=y-iy;fx=fx*fx*(3-2*fx);fy=fy*fy*(3-2*fy);
+      var a=h(ix,iy),b=h(ix+1,iy),c=h(ix,iy+1),d=h(ix+1,iy+1);return a+(b-a)*fx+(c-a)*fy+(a-b-c+d)*fx*fy}
+    for(var j=0;j<TH;j++)for(var i=0;i<TW;i++){
+      var x=((i+.5)/TW-.5)*6.2832*1.5+3,y=((j+.5)/TH-.5)*3.1416*2.4+1,v=0,a=.5;
+      for(var o=0;o<5;o++){v+=a*n(x,y);x=x*2.03+7.1;y=y*2.03+3.7;a*=.5}
+      px[j*TW+i]=Math.round(Math.min(1,v)*255);
+    }
+    var tx=gl.createTexture();gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,tx);
+    gl.pixelStorei(gl.UNPACK_ALIGNMENT,1);
+    gl.texImage2D(gl.TEXTURE_2D,0,gl.LUMINANCE,TW,TH,0,gl.LUMINANCE,gl.UNSIGNED_BYTE,px);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+    gl.uniform1i(U.LAND,0);
+  })();
+  // Touch screens render at 1x and let CSS scale the dots up crisply: the dither cells are 4px anyway,
+  // and a phone at 3x would otherwise shade 9x the pixels for the same picture.
+  var GDPR=matchMedia('(pointer:coarse)').matches?1:Math.min(window.devicePixelRatio||1,2);
+  var cw=0,ch=0,heroH=1;
+  function measure(){cw=c.clientWidth;ch=c.clientHeight;heroH=$('#top').offsetHeight||1;drewStatic=false}
+  if('ResizeObserver' in window)new ResizeObserver(measure).observe(c);else window.addEventListener('resize',measure);
   var heroEl=$('#top');
   if('IntersectionObserver' in window){new IntersectionObserver(function(es){hero.visible=es[0].isIntersecting}).observe(heroEl);}
   window.addEventListener('pointermove',function(e){
     var r=c.getBoundingClientRect();
     hero.mt=[(e.clientX/innerWidth)*2-1,-((e.clientY/innerHeight)*2-1)];
-    var dpr=Math.min(window.devicePixelRatio||1,2);
+    var dpr=GDPR;
     hero.mp=[(e.clientX-r.left)*dpr,(r.bottom-e.clientY)*dpr];
     hero.lensT=(e.pointerType==='mouse'&&e.clientY<r.bottom)?1:0;
   },{passive:true});
@@ -633,26 +663,30 @@ var hero={rot:0,vel:0,drag:false,s:0,intro:RM?1:0,lens:0,lensT:0,m:[0,0],mt:[0,0
   });
   var endDrag=function(){hero.drag=false;heroEl.classList.remove('spin')};
   heroEl.addEventListener('pointerup',endDrag);heroEl.addEventListener('pointercancel',endDrag);
-  var t0=performance.now(),last=t0,started=false,startAt=0,drewStatic=false;
+  var t0=performance.now(),last=t0,started=false,startAt=0,drewStatic=false,lastDraw=0;measure();
   function start(){if(started)return;started=true;startAt=performance.now();}
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){setTimeout(start,150)});
   setTimeout(start,1400);
   function frame(now){
     requestAnimationFrame(frame);
-    var dt=Math.min(.064,(now-last)/1000);last=now;
     if(!hero.visible&&drewStatic)return;
     if(RM&&drewStatic&&!hero.drag)return;
+    // Idle (no drag, no lens, intro done) the planet only drifts, so 30fps is plenty, even on 120Hz screens.
+    var busy=hero.drag||hero.lens>.01||hero.lensT>0||hero.intro<1||Math.abs(hero.vel)>.0005;
+    if(!busy&&now-lastDraw<32)return;
+    lastDraw=now;
+    var dt=Math.min(.064,(now-last)/1000);last=now;
     var k=1-Math.pow(1-.07,dt*60);
     if(!hero.drag&&!RM){hero.rot+=hero.vel;hero.vel*=Math.pow(.94,dt*60);}
     hero.m[0]+=(hero.mt[0]-hero.m[0])*k;hero.m[1]+=(hero.mt[1]-hero.m[1])*k;
     hero.lens+=(hero.lensT-hero.lens)*k*.8;
     if(!RM&&started){var p=Math.min(1,(now-startAt)/2600);hero.intro=1-Math.pow(1-p,3);}
-    var h=heroEl.offsetHeight||1;hero.s=RM?0:clamp(window.scrollY/h,0,1);
-    var dpr=Math.min(window.devicePixelRatio||1,2);
-    var w=Math.max(1,Math.round(c.clientWidth*dpr)),hh=Math.max(1,Math.round(c.clientHeight*dpr));
+    hero.s=RM?0:clamp(window.scrollY/heroH,0,1);
+    var dpr=GDPR;
+    var w=Math.max(1,Math.round(cw*dpr)),hh=Math.max(1,Math.round(ch*dpr));
     if(c.width!==w||c.height!==hh){c.width=w;c.height=hh;}
     gl.viewport(0,0,w,hh);
-    var cw=c.clientWidth,ch=c.clientHeight,wide=cw>900;
+    var wide=cw>900;
     var cx=wide?cw*.74:cw*.5, cy=wide?ch*.56:ch*.77, rad=wide?Math.min(ch*.30,cw*.2):Math.min(cw*.34,ch*.17);
     gl.uniform2f(U.R,w,hh);
     gl.uniform1f(U.T,RM?40.:(now-t0)/1000);
@@ -670,8 +704,9 @@ var hero={rot:0,vel:0,drag:false,s:0,intro:RM?1:0,lens:0,lensT:0,m:[0,0],mt:[0,0
     drewStatic=true;
   }
   requestAnimationFrame(frame);
-  window.addEventListener('resize',function(){drewStatic=false});
-})();
+}
+// Set the planet up after the first paint, so compiling the shader and baking the map never delay the headline.
+requestAnimationFrame(function(){setTimeout(initGL,0)});
 
 /* ---------- automation: scattered work settles into lanes ---------- */
 var flow={p:1,visible:false};
@@ -686,20 +721,24 @@ var flow={p:1,visible:false};
   }
   build();
   if('IntersectionObserver' in window){new IntersectionObserver(function(es){flow.visible=es[0].isIntersecting}).observe(c);}else flow.visible=true;
-  var drew=false,t0=performance.now();
+  var drew=false,t0=performance.now(),lastDraw=0,W=0,H=0,lastLanes='',lastYs='';
+  function measure(){W=c.clientWidth;H=c.clientHeight;drew=false}
+  if('ResizeObserver' in window)new ResizeObserver(measure).observe(c);else window.addEventListener('resize',measure);
+  measure();
   function laneYs(h,w){return w<900?[h-170,h-110,h-50]:[h-210,h-140,h-70]}
   function draw(now){
     requestAnimationFrame(draw);
     if(!flow.visible&&drew)return;
     if(RM&&drew)return;
+    if(now-lastDraw<32)return;lastDraw=now;
     var t=RM?20:(now-t0)/1000;
-    var dpr=Math.min(window.devicePixelRatio||1,2),w=c.clientWidth,h=c.clientHeight;
+    var dpr=Math.min(window.devicePixelRatio||1,2),w=W,h=H;
     if(c.width!==Math.round(w*dpr)||c.height!==Math.round(h*dpr)){c.width=Math.round(w*dpr);c.height=Math.round(h*dpr);build();}
     ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
     var ys=laneYs(h,w),off=w<900?130:190,span=w-off,per=Math.ceil(N/3),gap=(span+40)/per*1.0,speed=w<700?26:42;
     var sz=w<700?3:4;
-    labels.forEach(function(l,i){l.style.top=ys[i]+'px'});
-    lanesEl.style.setProperty('--lanes',clamp((flow.p-.62)/.25,0,1).toFixed(2));
+    var yk=ys.join();if(yk!==lastYs){lastYs=yk;labels.forEach(function(l,i){l.style.top=ys[i]+'px'})}
+    var ln=clamp((flow.p-.62)/.25,0,1).toFixed(2);if(ln!==lastLanes){lastLanes=ln;lanesEl.style.setProperty('--lanes',ln)}
     for(var i=0;i<N;i++){
       var q=P[i];
       var lp=clamp((flow.p-q.d*.45)/.55,0,1);lp=lp*lp*(3-2*lp);

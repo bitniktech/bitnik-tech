@@ -9,19 +9,17 @@ There is no build step.
 | --- | --- |
 | `public/` | everything served: `index.html`, `img/`, `privacy/`, `accessibility/`, `404.html` |
 | `public/_redirects` | 301s from the old multi-page site's URLs to sections of the one page |
-| `public/_headers` | security headers, and a week's cache on `img/` |
+| `public/_headers` | security headers; fonts cached a year, images 30 days |
+| `public/fonts/` | self-hosted Hubot Sans, Mona Sans, JetBrains Mono (unmodified Fontsource Latin files, OFL; `LICENSE.txt`) |
 | `functions/api/contact.js` | `POST /api/contact`, the contact form's endpoint |
 | `wrangler.toml` | the Pages project's configuration, including its bindings |
-| `.github/workflows/deploy.yml` | deploys `main` to Cloudflare Pages |
 
 ## How it is served
 
 Cloudflare Pages project `bitnik-tech` (account `fda92d10…`). DNS for the apex
 and `www` is declared in the `platform` repo, `projects/bitnik-tech/dns.tf`.
 
-Every push to `main` runs `deploy.yml`, which runs `wrangler pages deploy` with
-the repository secret `CLOUDFLARE_API_TOKEN` (a token scoped to *Cloudflare
-Pages: Edit* on this account). `wrangler.toml` is the source of truth for the
+Pushing to `main` deploys it. `wrangler.toml` is the source of truth for the
 project's bindings: anything set in the dashboard is replaced on deploy.
 
 ## The contact form
