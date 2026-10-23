@@ -234,15 +234,19 @@ a{color:inherit;text-decoration:none}
 /* Contact */
 .contact{padding-block:clamp(110px,20vh,220px) 40px;min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;gap:80px}
 .contact h2{grid-column:1 / span 12;font-size:clamp(46px,7.2vw,128px);max-width:12em}
-.contact .act{grid-column:1 / span 12;display:flex;flex-wrap:wrap;align-items:center;gap:20px 32px;margin-top:clamp(36px,6vh,64px)}
+.contact .act{grid-column:1 / span 12;display:flex;flex-direction:column;align-items:flex-start;gap:24px;margin-top:clamp(28px,5vh,52px)}
 .pform,.pdone{width:100%;max-width:760px;display:flex;flex-direction:column;gap:20px}
+.flead{width:100%;max-width:40ch;margin:0;color:var(--mute);font-size:17px;line-height:1.55}
 [hidden]{display:none!important}
 .f2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .fld{display:flex;flex-direction:column;gap:8px;border:0;margin:0;padding:0;min-width:0}
-.fld label,.fld legend{font-family:var(--mono);font-size:11px;color:var(--mute);padding:0}
-.fld input:not([type=radio]),.fld textarea{width:100%;min-height:48px;padding:12px 0;border:0;border-bottom:1px solid rgba(236,233,226,.32);background:transparent;color:var(--ink);font-family:var(--sans);font-size:17px;resize:vertical;border-radius:0}
-.fld input:focus,.fld textarea:focus{outline:none;border-bottom-color:var(--accent);box-shadow:0 1px 0 0 var(--accent)}
-.fld [aria-invalid=true]{border-bottom-color:#FF6B6B}
+.fld label,.fld legend{font-family:var(--mono);font-size:12px;color:#C9C7C1;padding:0}
+/* Outlined, faintly filled fields: on a dark page an underline alone reads as a rule, not a place to type. */
+.fld input:not([type=radio]),.fld textarea{width:100%;min-height:52px;padding:13px 16px;border:1px solid rgba(236,233,226,.24);background:rgba(236,233,226,.045);color:var(--ink);font-family:var(--sans);font-size:17px;resize:vertical;border-radius:12px;transition:border-color .2s,box-shadow .2s,background .2s}
+.fld input:not([type=radio]):hover,.fld textarea:hover{border-color:rgba(236,233,226,.4)}
+.fld input::placeholder,.fld textarea::placeholder{color:#8A8C92}
+.fld input:focus,.fld textarea:focus{outline:none;border-color:var(--accent);background:rgba(236,233,226,.07);box-shadow:0 0 0 3px rgba(34,199,106,.22)}
+.fld [aria-invalid=true]{border-color:#FF6B6B}
 .kinds{flex-direction:row;flex-wrap:wrap;gap:8px}
 .kinds legend{width:100%;margin-bottom:8px}
 .kinds label{position:relative;cursor:pointer}
@@ -488,7 +492,8 @@ a{color:inherit;text-decoration:none}
     <div class="grid">
       <h2 class="display">Let's build something together.</h2>
       <div class="act">
-      <form class="pform" id="pform" action="/api/contact" method="post" novalidate>
+      <p class="flead" id="flead">Tell us a little about what you&rsquo;re working on, and we&rsquo;ll get back to you by email.</p>
+      <form class="pform" aria-describedby="flead" id="pform" action="/api/contact" method="post" novalidate>
         <div class="f2">
           <div class="fld"><label for="f-name">Name</label><input id="f-name" name="name" autocomplete="name" required></div>
           <div class="fld"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
