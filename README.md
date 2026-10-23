@@ -50,13 +50,23 @@ bash infra/form-mailer/deploy.sh --add bitnik-tech
 
 That rebuilds form-mailer's client list and allowed recipients, and pipes one new
 secret into both form-mailer (`SECRET_BITNIK_TECH`) and this project
-(`MAILER_SECRET`). Redeploy this site afterwards so it picks the secret up. Until
-then the form answers 503 and the page shows an error with the phone number.
+(`MAILER_SECRET`). Redeploy this site afterwards so it picks the secret up.
+
+Spam protection: same-origin requests only; a hidden honeypot field and a submit
+within 2.5 seconds of page load are quietly dropped; and every request must carry
+a Cloudflare Turnstile token (widget "bitnik.tech contact form", Managed mode,
+shown only when Cloudflare wants a click). The site key is in `public/index.html`;
+the secret goes on this project as `TURNSTILE_SECRET` (Settings → Variables and
+secrets → Add → Secret, Production). The page loads Turnstile only as the form
+comes into view.
+
+Until `MAILER_SECRET` and `TURNSTILE_SECRET` both exist, the form answers 503 and
+the page shows an error with the phone number.
 
 ## Running it locally
 
 ```sh
-echo 'MAILER_SECRET=test-secret' > .dev.vars   # gitignored
+printf 'MAILER_SECRET=test-secret\nTURNSTILE_SECRET=1x0000000000000000000000000000000AA\n' > .dev.vars   # gitignored; Cloudflare's always-pass test secret
 npx wrangler@4.148.0 pages dev                  # http://localhost:8788
 ```
 

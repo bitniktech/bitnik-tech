@@ -4,6 +4,11 @@
 // X-Signature = hex HMAC-SHA256 of `${timestamp}.${body}` with MAILER_SECRET, the value
 // form-mailer holds as SECRET_BITNIK_TECH. form-mailer has no public URL, so this site
 // must run in the same Cloudflare account.
+//
+// Spam: same-origin only; a hidden honeypot field and a submit faster than a person could
+// type both get a quiet {"ok": true} that goes nowhere; and every request must carry a
+// Cloudflare Turnstile token that verifies against TURNSTILE_SECRET (widget "bitnik.tech
+// contact form", site key in public/index.html).
 
 const SLUG = "bitnik-tech";
 const KINDS = { website: "Website", app: "App", automation: "Automation", unsure: "Not sure yet" };
@@ -22,6 +27,21 @@ async function sign(secret, ts, body) {
   return [...new Uint8Array(mac)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
+// Tokens come from the widget; siteverify says whether this one was earned by a person.
+async function human(secret, token, ip) {
+  if (!token) return false;
+  const body = new FormData();
+  body.append("secret", secret);
+  body.append("response", String(token).slice(0, 2048));
+  if (ip) body.append("remoteip", ip);
+  try {
+    const r = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", { method: "POST", body });
+    return (await r.json()).success === true;
+  } catch {
+    return false;
+  }
+}
+
 const line = (v, n) => String(v ?? "").replace(/[\r\n]+/g, " ").trim().slice(0, n);
 
 export async function onRequestPost({ request, env }) {
@@ -36,6 +56,8 @@ export async function onRequestPost({ request, env }) {
 
   // Honeypot: the "website" field is hidden from people. Pretend success so bots move on.
   if (line(d.website, 200)) return json(200, { ok: true });
+  // Nobody fills in a name and an email within 2.5 seconds of the page loading.
+  if (!(Number(d.elapsed) >= 2500)) return json(200, { ok: true });
 
   const name = line(d.name, 120);
   const email = line(d.email, 200);
@@ -43,7 +65,10 @@ export async function onRequestPost({ request, env }) {
   const type = KINDS[d.kind] || KINDS.unsure;
   if (!name || !EMAIL_RE.test(email)) return json(422, { ok: false, error: "name and email required" });
 
-  if (!env.MAILER || !env.MAILER_SECRET) return json(503, { ok: false, error: "form not configured" });
+  if (!env.MAILER || !env.MAILER_SECRET || !env.TURNSTILE_SECRET) return json(503, { ok: false, error: "form not configured" });
+  if (!(await human(env.TURNSTILE_SECRET, d.token, request.headers.get("CF-Connecting-IP")))) {
+    return json(403, { ok: false, error: "verify" });
+  }
 
   const body = JSON.stringify({
     form: "Project inquiry",

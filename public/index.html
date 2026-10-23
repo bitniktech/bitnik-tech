@@ -324,7 +324,7 @@ a{color:inherit;text-decoration:none}
 <meta property="og:description" content="Thoughtfully crafted technology for the people building Western North Carolina. Websites, iPhone apps and AI that works for your people, not instead of them.">
 <meta property="og:image" content="https://bitnik.tech/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<style>.hp{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}.skip{position:fixed;z-index:100;left:16px;top:-80px;padding:10px 14px;background:var(--ink);color:var(--ground);font-size:14px}.skip:focus{top:16px}.foot a{color:inherit}.fsend .btn[disabled]{opacity:.5;pointer-events:none}</style>
+<style>.hp{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}.skip{position:fixed;z-index:100;left:16px;top:-80px;padding:10px 14px;background:var(--ink);color:var(--ground);font-size:14px}.skip:focus{top:16px}.foot a{color:inherit}.fsend .btn[disabled]{opacity:.5;pointer-events:none}.tsbox:empty{display:none}</style>
 </head>
 <body>
 
@@ -499,6 +499,7 @@ a{color:inherit;text-decoration:none}
         </fieldset>
         <div class="fld"><label for="f-msg">About the project</label><textarea id="f-msg" name="message" rows="4" placeholder="A sentence or two is plenty."></textarea></div>
         <div class="hp" aria-hidden="true"><label>Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label></div>
+        <div class="tsbox" id="tsbox"></div>
         <div class="fsend"><button class="btn solid" type="submit">Send</button><p class="fstat" id="pstatus" aria-live="polite"></p></div>
       </form>
       <div class="pdone" id="pdone" tabindex="-1" hidden><p class="pd-h">Thanks, <span data-name></span>.</p><p class="pd-b">We'll reply to <span data-email></span>.</p><button type="button" class="pagain" id="pagain">Send another</button></div>
@@ -760,7 +761,21 @@ var flow={p:1,visible:false};
 /* ---------- contact form: posts to /api/contact (functions/api/contact.js) ---------- */
 (function(){
   var f=document.getElementById('pform');if(!f)return;
-  var st=document.getElementById('pstatus'),btn=f.querySelector('button[type=submit]');
+  var st=document.getElementById('pstatus'),btn=f.querySelector('button[type=submit]'),t0=Date.now();
+  // Cloudflare Turnstile, loaded only as the form comes near so it costs the first view nothing.
+  // "interaction-only" stays invisible unless Cloudflare wants a visitor to click a box.
+  // Localhost uses Cloudflare's documented always-pass test key.
+  var SITEKEY=/^(localhost|127\.0\.0\.1)$/.test(location.hostname)?'1x00000000000000000000AA':'0x4AAAAAAFh4uEETLMa0jPcM';
+  var wid=null,loading=false,failed=false;
+  function loadTs(){
+    if(loading)return;loading=true;
+    window.__tsReady=function(){try{wid=turnstile.render('#tsbox',{sitekey:SITEKEY,theme:'dark',size:'flexible',appearance:'interaction-only',action:'contact'})}catch(e){}};
+    var s=document.createElement('script');s.src='https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=__tsReady';s.async=true;s.defer=true;s.onerror=function(){failed=true};document.head.appendChild(s);
+  }
+  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){if(es[0].isIntersecting){io.disconnect();loadTs()}},{rootMargin:'900px 0px'});io.observe(f)}else loadTs();
+  f.addEventListener('focusin',loadTs);
+  function token(){try{return wid!==null&&window.turnstile?turnstile.getResponse(wid)||'':''}catch(e){return ''}}
+  function waitToken(cb){var n=0;(function k(){var t=token();if(t||failed||n++>=40)cb(t);else setTimeout(k,250)})()}
   f.addEventListener('submit',function(e){
     e.preventDefault();
     var n=f.elements.name,m=f.elements.email,ok=true;
@@ -768,20 +783,24 @@ var flow={p:1,visible:false};
     if(!n.value.trim()){n.setAttribute('aria-invalid','true');ok=false}
     if(!/^\S+@\S+\.\S+$/.test(m.value.trim())){m.setAttribute('aria-invalid','true');ok=false}
     if(!ok){st.textContent='Add your name and a valid email so we can reply.';(n.getAttribute('aria-invalid')?n:m).focus();return}
-    var data={name:n.value.trim(),email:m.value.trim(),kind:(f.querySelector('input[name=kind]:checked')||{}).value||'unsure',message:f.elements.message.value,website:f.elements.website.value};
-    btn.disabled=true;st.style.color='var(--mute)';st.textContent='Sending…';
-    fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
-      .then(function(r){return r.json().catch(function(){return{}}).then(function(j){if(!r.ok||!j.ok)throw new Error(j.error||r.status)})})
-      .then(function(){
-        btn.disabled=false;st.textContent='';st.style.color='';
-        f.hidden=true;var d=document.getElementById('pdone');d.hidden=false;
-        d.querySelector('[data-name]').textContent=data.name.split(/\s+/)[0];d.querySelector('[data-email]').textContent=data.email;
-        d.focus();
-      })
-      .catch(function(){
-        btn.disabled=false;st.style.color='';
-        st.textContent="That didn't go through. Try again in a moment, or call +1 757 871 1805.";
-      });
+    var data={name:n.value.trim(),email:m.value.trim(),kind:(f.querySelector('input[name=kind]:checked')||{}).value||'unsure',message:f.elements.message.value,website:f.elements.website.value,elapsed:Date.now()-t0};
+    btn.disabled=true;st.style.color='var(--mute)';st.textContent='Sending…';loadTs();
+    waitToken(function(t){
+      data.token=t;
+      fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
+        .then(function(r){return r.json().catch(function(){return{}}).then(function(j){if(!r.ok||!j.ok)throw new Error(j.error||r.status)})})
+        .then(function(){
+          btn.disabled=false;st.textContent='';st.style.color='';
+          f.hidden=true;var d=document.getElementById('pdone');d.hidden=false;
+          d.querySelector('[data-name]').textContent=data.name.split(/\s+/)[0];d.querySelector('[data-email]').textContent=data.email;
+          d.focus();
+        })
+        .catch(function(err){
+          btn.disabled=false;st.style.color='';
+          st.textContent=failed?"Our spam check didn't load (an ad blocker can do this). Allow challenges.cloudflare.com and try again, or call +1 757 871 1805.":err&&err.message==='verify'?"We couldn't confirm you're a person. Complete the check above the Send button, then send again.":"That didn't go through. Try again in a moment, or call +1 757 871 1805.";
+        })
+        .then(function(){try{if(wid!==null)turnstile.reset(wid)}catch(e){}});
+    });
   });
   document.getElementById('pagain').addEventListener('click',function(){f.reset();f.hidden=false;document.getElementById('pdone').hidden=true;st.textContent='';f.elements.name.focus()});
 })();
