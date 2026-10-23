@@ -68,7 +68,11 @@ a{color:inherit;text-decoration:none}
 .hero{position:relative;min-height:max(640px,100svh);overflow:hidden;isolation:isolate;display:flex;flex-direction:column;justify-content:flex-end;padding-block:120px clamp(28px,6vh,72px)}
 #gl{position:absolute;inset:0;width:100%;height:100%;z-index:-1;display:block;image-rendering:pixelated}
 .hero{cursor:grab;touch-action:pan-y}
-.hero.spin{cursor:grabbing}
+.hero.spin{cursor:grabbing;-webkit-user-select:none;user-select:none}
+/* Display type sets its lines tighter than their boxes, so a highlight box on one line would paint over
+   the line above. Selected display text changes colour instead: ink turns green, green turns ink. */
+.display::selection,.display *::selection{background:transparent;color:var(--accent)}
+.display em::selection{color:var(--ink)}
 .hero .grid{cursor:auto}
 .spinhint{position:absolute;right:max(var(--g),env(safe-area-inset-right,0px));top:clamp(96px,16vh,150px);margin:0;color:var(--mute);display:flex;align-items:center;gap:10px;pointer-events:none}
 .spinhint i{width:22px;height:1px;background:var(--rule)}
@@ -655,6 +659,8 @@ function initGL(){
   var lastX=0;
   heroEl.addEventListener('pointerdown',function(e){
     if(e.target.closest('a,button,p,h1')||e.button>0)return;
+    // A mouse drag would otherwise start selecting the headline; stop that and drop any stray selection.
+    if(e.pointerType==='mouse'){e.preventDefault();var sel=window.getSelection&&window.getSelection();if(sel&&sel.removeAllRanges)sel.removeAllRanges()}
     hero.drag=true;lastX=e.clientX;hero.vel=0;heroEl.classList.add('spin');
     try{heroEl.setPointerCapture(e.pointerId)}catch(_){}
   });
