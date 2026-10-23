@@ -61,8 +61,8 @@ a{color:inherit;text-decoration:none}
 .navr{display:flex;align-items:center;gap:28px}
 .navr a{display:inline-flex;align-items:center;min-height:44px;font-size:13px;color:var(--mute);transition:color .5s var(--ease)}
 .navr a:hover{color:var(--ink)}
-.clock{color:var(--mute);white-space:nowrap}
-@media (max-width:760px){.navr .hide-s{display:none}.clock{display:none}}
+.place{color:var(--mute);white-space:nowrap}
+@media (max-width:760px){.navr .hide-s{display:none}.place{display:none}}
 
 /* ---------- hero ---------- */
 .hero{position:relative;min-height:max(640px,100svh);overflow:hidden;isolation:isolate;display:flex;flex-direction:column;justify-content:flex-end;padding-block:120px clamp(28px,6vh,72px)}
@@ -77,7 +77,6 @@ a{color:inherit;text-decoration:none}
 .spinhint{position:absolute;right:max(var(--g),env(safe-area-inset-right,0px));top:clamp(96px,16vh,150px);margin:0;color:var(--mute);display:flex;align-items:center;gap:10px;pointer-events:none}
 .spinhint i{width:22px;height:1px;background:var(--rule)}
 @media (max-width:900px){.spinhint{display:none}}
-.hero .eyebrow{grid-column:1 / span 6;margin:0 0 clamp(20px,3vh,36px);color:var(--mute)}
 .hero h1{grid-column:1 / span 12;font-size:clamp(54px,10.4vw,204px);max-width:5.4em}
 .hero h1 em{font-style:normal;color:var(--accent)}
 .hero .aside{grid-column:1 / span 12;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:28px 48px;margin-top:clamp(28px,5vh,56px)}
@@ -339,7 +338,7 @@ a{color:inherit;text-decoration:none}
     <a class="hide-s" href="#work-list">Work</a>
     <a class="hide-s" href="#ai">Streamlining</a>
     <a href="#contact">Contact</a>
-    <span class="mono clock" id="clock">Asheville, NC</span>
+    <span class="mono place">Asheville, NC</span>
   </nav>
 </header>
 
@@ -348,7 +347,6 @@ a{color:inherit;text-decoration:none}
     <canvas id="gl" aria-hidden="true"></canvas>
     <p class="mono spinhint" aria-hidden="true"><i></i>Drag to spin</p>
     <div class="grid">
-      <p class="eyebrow mono">Bitnik Technology &nbsp;/&nbsp; Asheville, NC</p>
       <h1 class="display">Less busywork. <em>More business.</em></h1>
       <div class="aside">
         <p class="body">We build the websites, iPhone apps and AI tools that take the busywork off your plate, so you and your team get back to the work only you can do.</p>
@@ -526,13 +524,12 @@ var $=function(s,c){return (c||document).querySelector(s)};
 var $$=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))};
 var clamp=function(v,a,b){return Math.max(a,Math.min(b,v))};
 
-/* ---------- clocks: local studio time, AVL tonight ---------- */
+/* ---------- clock: AVL.LIVE's "tonight" line ---------- */
 function tick(){
   try{
     var d=new Date();
     var t=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',hour:'numeric',minute:'2-digit'}).format(d);
     var wd=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',weekday:'long'}).format(d);
-    $('#clock').textContent='Asheville, NC  '+t;
     $('#avlclock').textContent=wd+' · '+t+' ET in Asheville';
   }catch(e){}
 }
