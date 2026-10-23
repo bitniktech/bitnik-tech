@@ -1,10 +1,11 @@
 // POST /api/contact: the contact form on the home page.
-// Validates the submission, then hands it to the form-mailer Worker over the
-// FORM_MAILER service binding, signed the way form-mailer expects:
-// X-Signature = hex HMAC-SHA256 of `${timestamp}.${body}` with FORM_SECRET,
-// which is the same value form-mailer holds as SECRET_BITNIK.
+// Validates the submission, then hands it to the form-mailer Worker (jsindy/website-ai,
+// infra/form-mailer) over the MAILER service binding, signed the way form-mailer expects:
+// X-Signature = hex HMAC-SHA256 of `${timestamp}.${body}` with MAILER_SECRET, the value
+// form-mailer holds as SECRET_BITNIK_TECH. form-mailer has no public URL, so this site
+// must run in the same Cloudflare account.
 
-const SLUG = "bitnik";
+const SLUG = "bitnik-tech";
 const KINDS = { website: "Website", app: "App", automation: "Automation", unsure: "Not sure yet" };
 const EMAIL_RE = /^[^\s@<>",]+@[^\s@<>",]+\.[^\s@<>",]+$/;
 
@@ -42,7 +43,7 @@ export async function onRequestPost({ request, env }) {
   const type = KINDS[d.kind] || KINDS.unsure;
   if (!name || !EMAIL_RE.test(email)) return json(422, { ok: false, error: "name and email required" });
 
-  if (!env.FORM_MAILER || !env.FORM_SECRET) return json(503, { ok: false, error: "form not configured" });
+  if (!env.MAILER || !env.MAILER_SECRET) return json(503, { ok: false, error: "form not configured" });
 
   const body = JSON.stringify({
     form: "Project inquiry",
@@ -50,13 +51,13 @@ export async function onRequestPost({ request, env }) {
     fields: { name, email, type, message },
   });
   const ts = String(Math.floor(Date.now() / 1000));
-  const res = await env.FORM_MAILER.fetch("https://form-mailer/send", {
+  const res = await env.MAILER.fetch("https://form-mailer/send", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "X-Slug": SLUG,
       "X-Timestamp": ts,
-      "X-Signature": await sign(env.FORM_SECRET, ts, body),
+      "X-Signature": await sign(env.MAILER_SECRET, ts, body),
     },
     body,
   });

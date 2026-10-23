@@ -1,10 +1,11 @@
-# Cloudflare Pages project "bitnik-tech" (bitnik.tech). Deployed by .github/workflows/deploy.yml.
+# Cloudflare Pages project "bitnik-tech" (bitnik.tech). Deployed with `npx wrangler pages deploy`.
 # This file is the project's configuration: bindings set in the dashboard are replaced by what is here.
 name = "bitnik-tech"
 pages_build_output_dir = "public"
 compatibility_date = "2026-10-01"
 
-# The contact form (functions/api/contact.js) sends through the form-mailer Worker.
+# The contact form (functions/api/contact.js) sends through the form-mailer Worker, which has
+# no public URL: this project must live in form-mailer's account (Brad's, fda92d10…).
 [[services]]
-binding = "FORM_MAILER"
+binding = "MAILER"
 service = "form-mailer"

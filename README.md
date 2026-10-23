@@ -16,46 +16,51 @@ There is no build step.
 
 ## How it is served
 
-Cloudflare Pages project `bitnik-tech` (account `fda92d10…`). DNS for the apex
-and `www` is declared in the `platform` repo, `projects/bitnik-tech/dns.tf`.
+Cloudflare Pages project `bitnik-tech` in Brad's account (`fda92d10…`), the account
+that holds the bitnik.tech zone and the `form-mailer` Worker. DNS for the apex and
+`www` is declared in the `platform` repo, `projects/bitnik-tech/dns.tf`.
 
-Pushing to `main` deploys it. `wrangler.toml` is the source of truth for the
-project's bindings: anything set in the dashboard is replaced on deploy.
+Deploy from a clean checkout of `main`:
+
+```sh
+CLOUDFLARE_ACCOUNT_ID=fda92d10e4a8d782ba78b35a860e47a1 npx wrangler@4.148.0 pages deploy --branch main
+```
+
+`wrangler.toml` is the source of truth for the project's bindings: anything set
+in the dashboard is replaced on deploy.
 
 ## The contact form
 
 The page posts JSON to `/api/contact`. The function checks the request came
 from this site, drops anything that fills the hidden `website` field, validates
-name and email, and hands the submission to the `form-mailer` Worker over the
-`FORM_MAILER` service binding. form-mailer verifies an HMAC signature and sends
-the email through Cloudflare Email Service from `forms@send.bitnik.tech`, with
-reply-to set to the visitor.
+name and email, and hands the submission to the `form-mailer` Worker
+(`jsindy/website-ai`, `infra/form-mailer`) over the `MAILER` service binding,
+signed with `MAILER_SECRET`. form-mailer verifies the signature and sends the
+email through Cloudflare Email Service from `forms@send.bitnik.tech`, with
+reply-to set to the visitor. form-mailer has no public URL, so this project must
+stay in its account.
 
-It needs, once:
+form-mailer is configured from `website-ai`, not here. Its client record
+`clients/bitnik-tech/client.json` needs, under `live`:
+`"cloudflare_account": "fda92d10e4a8d782ba78b35a860e47a1"` and
+`"form_to": ["brad@bitnik.tech"]`. Then, in `website-ai`:
 
-- form-mailer's `CLIENTS` variable to have a `bitnik` entry, e.g.
-  `"bitnik":{"name":"Bitnik Technology","site":"bitnik.tech","to":["brad@bitnik.tech"]}`
-- the same random value as form-mailer's secret `SECRET_BITNIK` and this Pages
-  project's secret `FORM_SECRET`. Generate it once and pipe it to both, so it is
-  never copied by hand:
+```sh
+bash infra/form-mailer/deploy.sh --add bitnik-tech
+```
 
-  ```sh
-  s=$(openssl rand -hex 32)
-  printf %s "$s" | npx wrangler secret put SECRET_BITNIK --name form-mailer
-  printf %s "$s" | npx wrangler pages secret put FORM_SECRET --project-name bitnik-tech
-  unset s
-  ```
-
-Until both exist the form answers 503 and the page shows an error with the phone
-number. These are secrets set by hand on a provider, so nothing rotates them.
+That rebuilds form-mailer's client list and allowed recipients, and pipes one new
+secret into both form-mailer (`SECRET_BITNIK_TECH`) and this project
+(`MAILER_SECRET`). Redeploy this site afterwards so it picks the secret up. Until
+then the form answers 503 and the page shows an error with the phone number.
 
 ## Running it locally
 
 ```sh
-echo 'FORM_SECRET=test-secret' > .dev.vars     # gitignored
+echo 'MAILER_SECRET=test-secret' > .dev.vars   # gitignored
 npx wrangler@4.148.0 pages dev                  # http://localhost:8788
 ```
 
 To exercise the form end to end, run a copy of form-mailer with `wrangler dev`
-alongside it (its `MAILER` binding replaced by one that logs); `pages dev`
-connects the `FORM_MAILER` binding to it automatically.
+alongside it (its `MAILER` email binding replaced by one that logs);
+`pages dev` connects this project's `MAILER` service binding to it automatically.
