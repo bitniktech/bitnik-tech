@@ -166,6 +166,7 @@ a{color:inherit;text-decoration:none}
 .rt .ctext h3 em{font-style:normal;color:var(--rt-lime)}
 .rt-logo{height:26px;width:auto}
 .rt .link{color:var(--rt-lime)}
+.links{display:flex;flex-wrap:wrap;gap:4px 24px}
 .watch{grid-column:6 / span 2;justify-self:center;width:min(100%,220px);display:flex;flex-direction:column;align-items:center;gap:22px}
 .wstack{position:relative;width:100%;aspect-ratio:416/496;border-radius:20%/17%;overflow:hidden;box-shadow:0 0 0 7px #0b0d14,0 0 0 8px rgba(253,250,244,.16),0 50px 90px -30px rgba(0,0,0,.8)}
 .wstack img{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .45s var(--ease)}
@@ -408,8 +409,11 @@ a{color:inherit;text-decoration:none}
         <img class="rt-logo" src="/img/rt-logo.svg" width="1057" height="648" alt="Rally Trace" style="width:auto">
         <h3 class="display">Every rally, <em>remembered.</em></h3>
         <p class="body">Our pickleball app for Apple Watch and iPhone. Tap the side that won the rally and the watch keeps the score, the server and the side. Your phone keeps the story: partners, sessions, effort.</p>
-        <p class="meta mono"><span>watchOS + iOS</span><span>In beta on TestFlight</span></p>
-        <a class="link" href="https://rallytrace.com/" target="_blank" rel="noopener">rallytrace.com <span aria-hidden="true">↗</span></a>
+        <p class="meta mono"><span>watchOS + iOS</span><span>On the App Store</span></p>
+        <div class="links">
+          <a class="link" href="https://apps.apple.com/app/id6823233667" target="_blank" rel="noopener">App Store <span aria-hidden="true">↗</span></a>
+          <a class="link" href="https://rallytrace.com/" target="_blank" rel="noopener">rallytrace.com <span aria-hidden="true">↗</span></a>
+        </div>
       </div>
       <div class="watch">
         <div class="wstack" id="wstack">
